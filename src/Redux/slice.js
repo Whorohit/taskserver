@@ -16,7 +16,7 @@ const initialState = {
 
 export const Getnews = createAsyncThunk('admin/login', async ({ query = '', tags = '', by = 0, time = undefined, page = 0 } = {}) => {
     try {
-        const baseUrl = 'http://hn.algolia.com/api/v1/search';
+        const baseUrl = 'https://hn.algolia.com/api/v1/search';
         const params = new URLSearchParams();
 
         if (query) params.append('query', query);
