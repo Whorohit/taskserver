@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const Page = ({
   setpagenumber = () => {},
-  initialpage = 1,
   totalpagetotalresult = 0,
 }) => {
   const itemsPerPage = 8;
+  const { page } = useSelector((state) => state.slice);
+  const [currentpage, setCurrentPage] = useState(page);
   const totalPages = Math.ceil(totalpagetotalresult / itemsPerPage);
 
-  // Use local state to manage the current page
-  const [currentpage, setCurrentPage] = useState(initialpage);
+  useEffect(() => {
+    // Update local `currentpage` whenever `page` from Redux store changes
+    setCurrentPage(page);
+  }, [page]);
 
   const getPageRange = () => {
     const maxPagesToShow = 8;
@@ -34,17 +38,12 @@ const Page = ({
     setpagenumber(page); // Call the parent component function
   };
 
-  useEffect(() => {
-    // Trigger the range calculation whenever the current page changes
-    getPageRange();
-  }, [currentpage]);
-
   return (
-    <div  className='flex items-center gap-2 '>
+    <div className="flex items-center gap-2">
       <button 
         onClick={() => handlePageClick(currentpage - 1)} 
         disabled={currentpage <= 1}
-        className='disabled:hidden  hover:bg-gray-400 rounded-sm px-2 py-1 bg-white focus-within:bg-gray-400 focus-within:scale-105 '
+        className="disabled:hidden hover:bg-gray-400 rounded-sm px-2 py-1 bg-white focus-within:bg-gray-400 focus-within:scale-105"
       >
         {'<'}
       </button>
@@ -53,9 +52,7 @@ const Page = ({
         <button
           key={page}
           onClick={() => handlePageClick(page)}
-          
-          className={` ${page===currentpage?"bg-gray-400  ":"bg-white "} px-2 py-1 rounded-sm   focus-within:scale-105  
-              `}
+          className={`${page === currentpage ? "bg-gray-400" : "bg-white"} px-2 py-1 rounded-sm focus-within:scale-105`}
         >
           {page}
         </button>
@@ -64,7 +61,7 @@ const Page = ({
       <button 
         onClick={() => handlePageClick(currentpage + 1)} 
         disabled={currentpage >= totalPages}
-          className='disabled:hidden  hover:bg-gray-400 rounded-sm px-2 py-1  bg-white  focus-within:bg-gray-400 focus-within:scale-105 '
+        className="disabled:hidden hover:bg-gray-400 rounded-sm px-2 py-1 bg-white focus-within:bg-gray-400 focus-within:scale-105"
       >
         {'>'}
       </button>

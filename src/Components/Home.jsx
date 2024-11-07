@@ -24,8 +24,9 @@ const Home = () => {
     const tagsParam = searchParams.get("tags") || "story";
     const byParam = searchParams.get("by") || 0;
     const timeParam = searchParams.get("time") || -1;
-    const pageParam = searchParams.get("page") || 0;
-
+    const pageParam = parseInt(searchParams.get("page"), 10) || 0;
+    console.log(pageParam);
+    
     dispatch(setquery(queryParam));
     dispatch(settags(tagsParam));
     dispatch(setBy(byParam));
@@ -69,6 +70,9 @@ const Home = () => {
 
     fetchNews();
   }, [query, tags, by, time, page, dispatch, isFirstLoad]);
+
+  console.log(page);
+  
   const handlePageChange = (value) => {
     console.log(value);
     
@@ -128,7 +132,7 @@ const Home = () => {
           onChange={handlePageChange}
         /> */}
         <Page setpagenumber={handlePageChange}
-          currentpage={page+1}
+          initialpage={page+1}
           totalpagetotalresult={totalresult}
         ></Page>
       </Box>
