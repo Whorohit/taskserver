@@ -9,7 +9,8 @@ const Filter = () => {
         tags,
         by,
         time,
-        page, data } = useSelector((state) => state.slice)
+        page, data,totalresult,
+        resultshowtime, } = useSelector((state) => state.slice)
     const dispatch = useDispatch();
     const CustomSelect = styled(Select)({
         padding: ".1rem",
@@ -156,7 +157,7 @@ const Filter = () => {
                 </Box>
             </Box>
             <Box className="basis-1/3  hidden md:flex  justify-end items-center">
-                38,296,562 results (0.005 seconds)
+                {totalresult} results (0.00{resultshowtime} seconds)
 
 
             </Box>

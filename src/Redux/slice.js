@@ -12,6 +12,8 @@ const initialState = {
     resulttime: "",
     islogin: false,
     login: false,
+    totalresult: 0,
+    resultshowtime: "",
 };
 
 export const Getnews = createAsyncThunk('admin/login', async ({ query = '', tags = '', by = 0, time = undefined, page = 0 } = {}) => {
@@ -40,10 +42,19 @@ export const Getnews = createAsyncThunk('admin/login', async ({ query = '', tags
 
         const { data } = await axios.get(`${baseUrl}?${params}`);
 
-        return data;
+
+        return {
+            hits: data.hits,
+            totalResults: data.nbHits,
+            resultShowTime: data.serverTimeMS,
+        };
     } catch (error) {
         console.log(error);
-        return [];
+        return {
+            hits: [],
+            totalResults: 0,
+            resultShowTime: 0
+        }
 
     }
 });
@@ -59,16 +70,24 @@ const slice = createSlice({
         incrementpage: (state) => { state.page += 1; },
         decrementpage: (state) => { state.page -= 1; },
         setpage: (state, action) => { state.page = action.payload },
-        setislogin:(state,action)=>{state.islogin=action.payload},
-        setlogin:(state,action)=>{state.login=action.payload},
+        setislogin: (state, action) => { state.islogin = action.payload },
+        setlogin: (state, action) => { state.login = action.payload },
     },
     extraReducers: (builder) => {
-        builder.addCase(Getnews.fulfilled, (state, action) => { state.data = action.payload; });
-        builder.addCase(Getnews.rejected, (state) => { state.data = []; });
+        builder.addCase(Getnews.fulfilled, (state, action) => {
+            state.data = action.payload.hits;
+            state.totalresult = action.payload.totalResults;
+            state.resultshowtime = action.payload.resultShowTime;
+        });
+        builder.addCase(Getnews.rejected, (state) => {
+            state.data = [];
+            state.totalresult = 0;
+            state.resultshowtime = 0;
+        });
     }
 });
 
-export const { settags, setquery, settime, incrementpage, decrementpage, setBy, setpage,setislogin,setlogin
+export const { settags, setquery, settime, incrementpage, decrementpage, setBy, setpage, setislogin, setlogin
 
 } = slice.actions;
 export default slice.reducer;

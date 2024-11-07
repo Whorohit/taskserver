@@ -4,6 +4,7 @@ import { Getnews, setBy, setpage, setquery, settags, settime } from '../Redux/sl
 import { Box, Pagination } from '@mui/material';
 import moment from 'moment';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import Page from './Page';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const Home = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [news, setNews] = useState([]);
 
-  const { query, tags, by, time, page } = useSelector((state) => state.slice);
+  const { query, tags, by, time, page, totalresult, resultshowtime, } = useSelector((state) => state.slice);
 
   const stripHTML = (text) => {
     const doc = new DOMParser().parseFromString(text, "text/html");
@@ -54,6 +55,8 @@ const Home = () => {
       try {
         const fetchParams = isFirstLoad ? {} : { query, tags, by, time, page };
         const result = await dispatch(Getnews(fetchParams));
+        // console.log(result);
+
         setNews(result.payload.hits);
         if (isFirstLoad) {
           setIsFirstLoad(false);
@@ -66,18 +69,35 @@ const Home = () => {
 
     fetchNews();
   }, [query, tags, by, time, page, dispatch, isFirstLoad]);
-  const handlePageChange = (event, value) => {
-    dispatch(setpage(value - 1));  // Pagination is 1-based; adjust for 0-based index
+  const handlePageChange = (value) => {
+    console.log(value);
+    
+    dispatch(setpage(value - 1));  
   };
+
+  const highlightQuery = (text, query) => {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
+      ) : (
+        part
+      )
+    );
+  };
+
 
   return (
     <Box className="w-full mx-auto bg-[#f6f6ef] px-2 py-2 md:w-4/5 h-full">
       {news.map((info) => {
         const days = moment(info.created_at).startOf('days').fromNow();
+        const content = info.title ? info.title : stripHTML(info.comment_text);
         return (
           <Box key={info.id} className="flex flex-col gap-y-1 justify-start my-2">
             <h1 className="flex justify-start items-center gap-1 text-sm flex-wrap text-black">
-              {info.title ? info.title : stripHTML(info.comment_text)}
+            {highlightQuery(content, query)}
               {info.url && (
                 <a
                   href={info.url ? info.url : ""}
@@ -100,13 +120,17 @@ const Home = () => {
         );
       })}
       <Box className="flex justify-center items-center">
-        <Pagination
+        {/* <Pagination
           count={50}
           variant="outlined"
           shape="rounded"
           page={page + 1} // Adjust for 1-based pagination display
           onChange={handlePageChange}
-        />
+        /> */}
+        <Page setpagenumber={handlePageChange}
+          currentpage={page+1}
+          totalpagetotalresult={totalresult}
+        ></Page>
       </Box>
     </Box>
   );
