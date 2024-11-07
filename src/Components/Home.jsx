@@ -105,7 +105,7 @@ const Home = () => {
               {info.url && (
                 <a
                   href={info.url ? info.url : ""}
-                  className="break-words no-underline hover:underline text-gray-400 text-sm"
+                  className="break-words w-full  no-underline hover:underline text-gray-400 text-sm"
                 >
                   {`(${info.url ? info.url : info.story_url})`}
                 </a>

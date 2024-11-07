@@ -7,12 +7,12 @@ const Page = ({
 }) => {
   const itemsPerPage = 8;
   const { page } = useSelector((state) => state.slice);
-  const [currentpage, setCurrentPage] = useState(page);
+  const [currentpage, setCurrentPage] = useState(page+1);
   const totalPages = Math.ceil(totalpagetotalresult / itemsPerPage);
 
   useEffect(() => {
     // Update local `currentpage` whenever `page` from Redux store changes
-    setCurrentPage(page);
+    setCurrentPage(page+1);
   }, [page]);
 
   const getPageRange = () => {
