@@ -24,7 +24,7 @@ const Home = () => {
     const tagsParam = searchParams.get("tags") || "story";
     const byParam = searchParams.get("by") || 0;
     const timeParam = searchParams.get("time") || -1;
-    const pageParam = searchParams.get("page") || "0";
+    const pageParam = searchParams.get("page") || 0;
 
     dispatch(setquery(queryParam));
     dispatch(settags(tagsParam));
