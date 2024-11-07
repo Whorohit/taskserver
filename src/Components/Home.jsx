@@ -44,7 +44,7 @@ const Home = () => {
         tags: tags || "",
         by: by || "",
         time: time || "",
-        page: page || "0",
+        page: page || 0,
       });
     }
   }, [query, tags, by, time, page]);
